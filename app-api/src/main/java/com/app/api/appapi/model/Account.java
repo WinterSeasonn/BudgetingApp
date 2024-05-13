@@ -4,15 +4,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Account model
- * @Author John Luong
+ * @author John Luong
  */
 public class Account {
     @JsonProperty("username") private String username;
     @JsonProperty("password") private String password;
+    @JsonProperty("id") private int id;
 
-    public Account(@JsonProperty("username") String username, @JsonProperty("password") String password){
+    public Account(@JsonProperty("username") String username, @JsonProperty("password") String password, @JsonProperty("id") int id){
         this.username = username;
         this.password = password;
+        this.id = id;
     }
 
     /**
@@ -25,7 +27,7 @@ public class Account {
 
     /**
      * gets the Account username
-     * @return the username
+     * @return the account username
      */
     public String getUsername(){
         return username;
@@ -41,9 +43,17 @@ public class Account {
 
     /**
      * gets the Account password
-     * @return the password
+     * @return the account password
      */
     public String getPassword(){
         return password;
+    }
+
+    /**
+     * gets the Account id
+     * @return the account id
+     */
+    public int getId(){
+        return id;
     }
 }
