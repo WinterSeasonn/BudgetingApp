@@ -25,9 +25,9 @@ public class LoginController{
     }
 
     @GetMapping(path = "/")
-    public ResponseEntity<String> verify(@RequestParam("user") String user, @RequestParam("pass") String pass){
+    public ResponseEntity<String> verify(String user, String pass){
         try{
-            Account verifyAccount = ADAO.getAccount(user);
+            Account verifyAccount = ADAO.getAccount(user.toLowerCase());
             if(verifyAccount != null){
                 if(verifyAccount.getPassword().equals(pass)){
                     return new ResponseEntity<>(HttpStatus.OK);
@@ -39,7 +39,7 @@ public class LoginController{
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping("")
+    @PostMapping("/login")
     public ResponseEntity<Account> login(@RequestParam("user") String user, @RequestParam("pass") String pass){
         try{
             System.out.println("Testing Login...");
@@ -60,7 +60,7 @@ public class LoginController{
     public ResponseEntity<Boolean> signup(@RequestParam("user") String user, @RequestParam("pass") String pass){
         try{
             System.out.println("Testing Signup...");
-            if(ADAO.getAccount(user) != null){
+            if(ADAO.getAccount(user.toLowerCase()) != null){
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
             }else{
                 ADAO.createAccount(new Account(user,pass,0));
