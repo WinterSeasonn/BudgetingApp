@@ -138,6 +138,9 @@ public class AccountFileDAO implements AccountDAO{
     @Override
     public Account getAccount(String Username) {
         synchronized(accounts) {
+          if(getAccountArray(Username).length == 0){
+              return null;
+          }
           return getAccountArray(Username)[0];
         }
     }
