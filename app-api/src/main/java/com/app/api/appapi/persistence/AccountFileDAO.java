@@ -136,12 +136,9 @@ public class AccountFileDAO implements AccountDAO{
     ** {@inheritDoc}
      */
     @Override
-    public Account getAccount(int id) {
+    public Account getAccount(String Username) {
         synchronized(accounts) {
-            if (accounts.containsKey(id))
-                return accounts.get(id);
-            else
-                return null;
+          return getAccountArray(Username)[0];
         }
     }
 

@@ -23,7 +23,7 @@ public interface AccountDAO {
      * @return the Account with matching id or null if the id is not found
      * @throws IOException if an issue with underlying storage
      */
-    Account getAccount(int id) throws IOException;
+    Account getAccount(String Username) throws IOException;
 
     /**
      * Creates and saves an Account
