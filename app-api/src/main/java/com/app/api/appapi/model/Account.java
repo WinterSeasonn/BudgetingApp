@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author John Luong
  */
 public class Account {
+    static final String STRING_FORMAT = "Account [username=%s]";
     @JsonProperty("username") private String username;
     @JsonProperty("password") private String password;
     @JsonProperty("id") private int id;
@@ -55,5 +56,26 @@ public class Account {
      */
     public int getId(){
         return id;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public String toString(){
+        return String.format(STRING_FORMAT,username);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public boolean equals(Object other){
+        return ((Account)other).username == this.username;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public Account clone(){
+        return new Account(this.username, this.password, this.id);
     }
 }
