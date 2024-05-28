@@ -1,6 +1,7 @@
 package com.app.api.appapi.controller;
 
 import com.app.api.appapi.persistence.AccountDAO;
+import com.app.api.appapi.persistence.SessionDao;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +20,11 @@ Check Again
 
 public class LoginController{
     private AccountDAO ADAO;
+    private SessionDao SDAO;
 
-    public LoginController(AccountDAO ADAO){
+    public LoginController(AccountDAO ADAO,SessionDao SDAO){
       this.ADAO = ADAO;
+      this.SDAO = SDAO;
     }
 
     @GetMapping(path = "/")
@@ -45,7 +48,7 @@ public class LoginController{
             System.out.println("Testing Login...");
             ResponseEntity<String> verifyStatus = verify(user,pass);
             if(verifyStatus.getStatusCode() == HttpStatus.OK){
-                System.out.println("Works!");
+                SDAO.SetSessionInfo(user,pass);
                 return new ResponseEntity<>(ADAO.getAccount(user),HttpStatus.OK);
             }else{
                 return new ResponseEntity<>(verifyStatus.getStatusCode());
@@ -64,7 +67,7 @@ public class LoginController{
                 return new ResponseEntity<>(false, HttpStatus.CONFLICT);
             }else{
                 ADAO.createAccount(new Account(user,pass));
-                System.out.println("Works!");
+                SDAO.SetSessionInfo(user,pass);
                 return new ResponseEntity<>(true, HttpStatus.CREATED);
             }
 
