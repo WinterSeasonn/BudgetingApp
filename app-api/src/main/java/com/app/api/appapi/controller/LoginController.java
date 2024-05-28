@@ -15,7 +15,7 @@ import com.app.api.appapi.model.Account;
 Check Again
  */
 @RestController
-@RequestMapping("Login")
+@RequestMapping("login")
 
 public class LoginController{
     private AccountDAO ADAO;
@@ -25,12 +25,12 @@ public class LoginController{
     }
 
     @GetMapping(path = "/")
-    public ResponseEntity<String> verify(String user, String pass){
+    public ResponseEntity<String> verify(@RequestParam("user") String user, @RequestParam("pass") String pass){
         try{
-            Account verifyAccount = ADAO.getAccount(user.toLowerCase());
-            if(verifyAccount != null){
-                if(verifyAccount.getPassword().equals(pass)){
-                    return new ResponseEntity<>(HttpStatus.OK);
+            Account account = ADAO.getAccount(user.toLowerCase());
+            if(account != null){
+                if(account.getPassword().equals(pass)){
+                    return new ResponseEntity<>(user.toLowerCase(),HttpStatus.OK);
                 }
             }
         } catch (IOException e) {
@@ -39,7 +39,7 @@ public class LoginController{
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping("/login")
+    @PostMapping("")
     public ResponseEntity<Account> login(@RequestParam("user") String user, @RequestParam("pass") String pass){
         try{
             System.out.println("Testing Login...");
@@ -61,11 +61,11 @@ public class LoginController{
         try{
             System.out.println("Testing Signup...");
             if(ADAO.getAccount(user.toLowerCase()) != null){
-                return new ResponseEntity<>(HttpStatus.CONFLICT);
+                return new ResponseEntity<>(false, HttpStatus.CONFLICT);
             }else{
-                ADAO.createAccount(new Account(user,pass,0));
+                ADAO.createAccount(new Account(user,pass));
                 System.out.println("Works!");
-                return new ResponseEntity<>(HttpStatus.CREATED);
+                return new ResponseEntity<>(true, HttpStatus.CREATED);
             }
 
         }

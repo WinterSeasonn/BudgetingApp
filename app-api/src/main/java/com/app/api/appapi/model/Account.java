@@ -1,6 +1,9 @@
 package com.app.api.appapi.model;
 
+import java.io.IOException;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;;
 
 /**
  * Account model
@@ -9,12 +12,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Account {
     @JsonProperty("username") private String username;
     @JsonProperty("password") private String password;
-    @JsonProperty("id") private int id;
 
-    public Account(@JsonProperty("username") String username, @JsonProperty("password") String password, @JsonProperty("id") int id){
+    public Account(@JsonProperty("username") String username, @JsonProperty("password") String password){
         this.username = username;
         this.password = password;
-        this.id = id;
     }
 
     /**
@@ -49,11 +50,10 @@ public class Account {
         return password;
     }
 
-    /**
-     * gets the Account id
-     * @return the account id
-     */
-    public int getId(){
-        return id;
+    public String jsonEncode() throws IOException{
+        try{
+            return(new ObjectMapper()).writeValueAsString(this);
+        }catch(Exception e){}
+        return null;
     }
 }

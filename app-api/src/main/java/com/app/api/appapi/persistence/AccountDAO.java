@@ -46,9 +46,9 @@ public interface AccountDAO {
     /**
      * Deletes an Account
      * 
-     * @param id The id of the Account
+     * @param username The username of the Account
      * @return True if Account was deleted, false otherwise
      * @throws IOException if underlying storage cannot be accessed
      */
-    boolean deleteAccount(int id) throws IOException;
+    boolean deleteAccount(String username) throws IOException;
 }

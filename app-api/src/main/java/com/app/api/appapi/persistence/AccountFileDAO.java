@@ -18,9 +18,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @Component
 public class AccountFileDAO implements AccountDAO{
-    Map<Integer,Account> accounts;
+    Map<String,Account> accounts;
     private ObjectMapper objectMapper;
-    private static int nextId;
     private String filename;
 
     /**
@@ -35,17 +34,6 @@ public class AccountFileDAO implements AccountDAO{
         this.filename = filename;
         this.objectMapper = objectMapper;
         load();  // load the accounts from the file
-    }
-
-    /**
-     * Generates the next id for a new Account
-     * 
-     * @return The next id
-     */
-    private synchronized static int nextId() {
-        int id = nextId;
-        ++nextId;
-        return id;
     }
 
     /**
@@ -104,21 +92,16 @@ public class AccountFileDAO implements AccountDAO{
      */
     private boolean load() throws IOException {
         accounts = new TreeMap<>();
-        nextId = 0;
 
         // Deserializes the JSON objects from the file into an array of accounts
         // readValue will throw an IOException if there's an issue with the file
         // or reading from the file
         Account[] accountArray = objectMapper.readValue(new File(filename),Account[].class);
 
-        // Add each account to the tree map and keep track of the greatest id
+        // Add each account to the tree map
         for (Account account : accountArray) {
-            accounts.put(account.getId(),account);
-            if (account.getId() > nextId)
-                nextId = account.getId();
+            accounts.put(account.getUsername(),account);
         }
-        // Make the next id one greater than the maximum from the file
-        ++nextId;
         return true;
     }
 
@@ -136,12 +119,14 @@ public class AccountFileDAO implements AccountDAO{
     ** {@inheritDoc}
      */
     @Override
-    public Account getAccount(String Username) {
+    public Account getAccount(String username) {
         synchronized(accounts) {
-          if(getAccountArray(Username).length == 0){
-              return null;
+          if(accounts.containsKey(username)){
+            return accounts.get(username);
           }
-          return getAccountArray(Username)[0];
+          else{
+            return null;
+          }
         }
     }
 
@@ -153,8 +138,8 @@ public class AccountFileDAO implements AccountDAO{
         synchronized(accounts) {
             // We create a new account object because the id field is immutable
             // and we need to assign the next unique id --- Added .toLowerCase() to make sure all text is lowercase ---
-            Account newAccount = new Account(account.getUsername(), account.getPassword(), nextId());
-            accounts.put(newAccount.getId(),newAccount);
+            Account newAccount = new Account(account.getUsername(), account.getPassword());
+            accounts.put(newAccount.getUsername(),newAccount);
             save(); // may throw an IOException
             return newAccount;
         }
@@ -166,10 +151,10 @@ public class AccountFileDAO implements AccountDAO{
     @Override
     public Account updateAccount(Account account) throws IOException {
         synchronized(accounts) {
-            if (!accounts.containsKey(account.getId()))
+            if (!accounts.containsKey(account.getUsername()))
                 return null;
     
-            accounts.put(account.getId(), account);
+            accounts.put(account.getUsername(), account);
             save(); // may throw an IOException
             return account;
         }
@@ -179,10 +164,10 @@ public class AccountFileDAO implements AccountDAO{
     ** {@inheritDoc}
      */
     @Override
-    public boolean deleteAccount(int id) throws IOException {
+    public boolean deleteAccount(String username) throws IOException {
         synchronized(accounts) {
-            if (accounts.containsKey(id)) {
-                accounts.remove(id);
+            if (accounts.containsKey(username)) {
+                accounts.remove(username);
                 return save();
             }
             else
