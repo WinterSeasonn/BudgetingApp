@@ -28,12 +28,13 @@ public class LoginController{
     }
 
     @GetMapping(path = "/")
-    public ResponseEntity<String> verify(@RequestParam("user") String user, @RequestParam("pass") String pass){
+    public ResponseEntity<Account> verify(@RequestParam("user") String user, @RequestParam("pass") String pass){
         try{
+            System.out.println("Testing Verify...");
             Account account = ADAO.getAccount(user.toLowerCase());
             if(account != null){
                 if(account.getPassword().equals(pass)){
-                    return new ResponseEntity<>(user.toLowerCase(),HttpStatus.OK);
+                    return new ResponseEntity<>(account,HttpStatus.OK);
                 }
             }
         } catch (IOException e) {
@@ -46,10 +47,10 @@ public class LoginController{
     public ResponseEntity<Account> login(@RequestParam("user") String user, @RequestParam("pass") String pass){
         try{
             System.out.println("Testing Login...");
-            ResponseEntity<String> verifyStatus = verify(user,pass);
+            ResponseEntity<Account> verifyStatus = verify(user,pass);
             if(verifyStatus.getStatusCode() == HttpStatus.OK){
                 SDAO.SetSessionInfo(user,pass);
-                return new ResponseEntity<>(ADAO.getAccount(user),HttpStatus.OK);
+                return new ResponseEntity<>(ADAO.getAccount(user.toLowerCase()),HttpStatus.OK);
             }else{
                 return new ResponseEntity<>(verifyStatus.getStatusCode());
             }

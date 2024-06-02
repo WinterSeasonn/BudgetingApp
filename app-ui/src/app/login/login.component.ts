@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
+import { Account } from '../account';
 
 @Component({
   selector: 'app-login',
@@ -16,12 +17,16 @@ export class LoginComponent {
   constructor(private authService: AuthService, private fb: FormBuilder, private router: Router){}
 
   login(){
-    let verify = this.authService.verify(this.form.value.username,this.form.value.password)
-    .pipe()
-    .subscribe(U => {
-      console.log(U)
-      this.authService.login(U);
-      this.router.navigateByUrl('/dashboard');
-    })
+    this.authService.verify(this.form.value.username,this.form.value.password).subscribe(
+      (Response: Account) => {
+        if(!Response){
+          alert("Invalid username or password");
+        }
+        else{
+          this.authService.login(Response);
+          this.router.navigateByUrl('/dashboard');
+        }
+      }
+    )
   }
 }

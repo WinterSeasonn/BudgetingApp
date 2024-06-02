@@ -20,7 +20,12 @@ export class SignupComponent {
     let pass = this.form.value.password
     let verify = this.authService.signup(user,pass)    
     .subscribe(bool => {
-      this.router.navigateByUrl('/');
+      if(!bool){
+        alert("Username taken");
+      }
+      else{
+        this.router.navigateByUrl('/');
+      }
     })
   }
 }

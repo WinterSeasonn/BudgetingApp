@@ -56,7 +56,7 @@ export class AuthService {
     localStorage.removeItem("session");
     this.router.navigateByUrl("/");
 
-    this.http.get(`http://localhost:8080/login/logout`).subscribe();
+    //this.http.get(`http://localhost:8080/login/logout`).subscribe();
   }
   
   private handleError<T>(operation = 'operation', result?: T) {

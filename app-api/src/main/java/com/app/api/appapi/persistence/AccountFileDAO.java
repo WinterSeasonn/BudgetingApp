@@ -136,9 +136,10 @@ public class AccountFileDAO implements AccountDAO{
     @Override
     public Account createAccount(Account account) throws IOException {
         synchronized(accounts) {
-            // We create a new account object because the id field is immutable
-            // and we need to assign the next unique id --- Added .toLowerCase() to make sure all text is lowercase ---
-            Account newAccount = new Account(account.getUsername(), account.getPassword());
+            if(getAccount(account.getUsername()) != null){
+                throw new IOException("Username in use");
+            }
+            Account newAccount = new Account(account.getUsername().toLowerCase(), account.getPassword());
             accounts.put(newAccount.getUsername(),newAccount);
             save(); // may throw an IOException
             return newAccount;
